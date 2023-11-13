@@ -37,19 +37,17 @@ with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as servidor:
                 return produto["valor"]
         return None
     
-    
     def atualizaSaldo(matricula, novoSaldo):
         for usuario in usuarios:
             if usuario['matricula'] == matricula:
                 usuario['saldo'] = novoSaldo
                 return usuario['saldo']
-            else:
-                return False
+        return None
     
     def verificaCompra(produtoEscolhido):
         for produto in produtos:
             if produto['id'] == produtoEscolhido:
-                if produto['valor'] < saldoUsuario:
+                if produto['valor'] <= saldoUsuario:
                     return produto['nome']
         return None
     
@@ -82,7 +80,6 @@ with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as servidor:
                         saldoAtualizado = atualizaSaldo(autenticacao['matricula'], saldoUsuario - retornaValorProduto(produtoEscolhido))
                         pedidoMessage = f"Você comprou o produto: {compra}, seu saldo agora é de R${saldoAtualizado}"
                         cliente.send(pedidoMessage.encode())
-                        print(usuarios)
                     else:
                         error = "Erro ao comprar produto, verifique seu saldo ou se está digitando um produto corretamente!"
                         cliente.send(error.encode())               
